@@ -1,0 +1,1139 @@
+create database InsuranceManagement;
+use InsuranceManagement;
+
+create table Users(
+userid int primary key,
+username varchar(25),
+password varchar(20),
+role varchar(15)
+);
+
+create table policy(
+policyid int primary key,
+policyname varchar(20),
+claimamount double
+);
+
+
+create table Clients(
+clientid int primary key,
+clientname varchar(25),
+contactinfo varchar(11),
+policyid int,
+foreign key (policyid)references policy(policyid)
+);
+
+create table Claims(
+claimid int primary key,
+claimnumber int,
+datefiled date,
+claimamount double,
+status varchar(10),
+policyid int,
+clientid int,
+foreign key (policyid) references policy(policyid),
+foreign key (clientid) references Clients(clientid)
+);
+
+create table Payments(
+paymentid int primary key,
+paymentdate date,
+paymentamount double,
+clientid int,
+foreign key (clientid) references clients(clientid)
+);
+
+
+show databases;
+use courierms;
+show tables;
+
+desc courier;
+desc courierservices;
+desc employee;
+desc location;
+desc payment;
+desc users;
+select * from courier;
+
+
+
+
+create database CarRentalSystem;
+
+
+ create table Vechicles(
+	vechicleID int primary key,
+    make text,
+    model text,
+    vyear year,
+    dailyRate double,
+    vstatus boolean,
+    passengerCapacity int,
+    engineCapacity int
+ );
+ 
+ create table  Customers(
+	customer_id int primary key,
+    first_name text,
+    last_name text,
+    email text,
+    phone bigint
+);
+
+create table Lease(
+	leaseID int primary key,
+    vechicleID int,
+    customer_id int,
+    startDate date,
+    endDate date,
+    ltype enum('Monthly','Daily'),
+    foreign key(vechicleID) references Vechicles(VechicleID),
+    foreign key(customer_id) references Customers(customer_id)
+);
+
+create table Payment(
+	paymentID int primary key,
+    leaseID int,
+    paymentDate date,
+    amount double,
+    foreign key (leaseID) references Lease(leaseID)
+);
+
+INSERT INTO Vechicles(vechicleID,make,model,vyear,dailyRate,vstatus,passengerCapacity,engineCapacity)
+VALUES
+	(1,'Toyota','Camry',2022,50.00,1,4,1450),
+    (2,'Honda','Civic',2023,45.00,1,7,1500),
+    (3,'Ford','Focus',2022,48.00,0,4,1400),
+    (4,'Nissan','Altima',2023,52.00,1,7,1200),
+    (5,'Chevrolet','Malibu',2022,47.00,1,4,1800),
+    (6,'Hyndai','Sonata',2023,49.00,0,7,1400),
+    (7,'BMW','3 Series',2023,60.00,1,7,2499),
+    (8,'Mercedes','C-Class',2022,58.00,1,8,2599),
+    (9,'Audi','A4',2022,55.00,0,4,2500),
+    (10,'Lexus','ES',2023,54.00,1,4,2500);
+
+INSERT INTO Customers (customer_id, first_name, last_name, email,phone) 
+VALUES
+(1, 'John', 'Doe', 'johndoe@example.com', 5555555555),
+(2, 'Jane', 'Smith', 'janesmith@example.com', 5551234567),
+(3, 'Robert', 'Johnson', 'robert@example.com', 5557891234),
+(4, 'Sarah', 'Brown', 'sarah@example.com', 5554567890),
+(5, 'David', 'Lee', 'david@example.com', 5559876543),
+(6, 'Laura', 'Hall', 'laura@example.com', 5552345678),
+(7, 'Michael', 'Davis', 'michael@example.com', 5558765432),
+(8, 'Emma', 'Wilson', 'emma@example.com', 5554321098),
+(9, 'William', 'Taylor', 'william@example.com', 5553216547),
+(10, 'Olivia', 'Adams', 'olivia@example.com', 5557654321);
+
+use carrentalsystem;
+show tables;
+
+select * from customers;
+select * from lease;
+select * from payment;
+select * from vehicles;
+
+ALTER TABLE vechicles RENAME vehicles;
+
+ALTER TABLE lease  
+CHANGE COLUMN vechicleid vehicleid int;
+
+delete from vehicles where vehicleid = 59;
+
+delete from Customers where customer_id = 12;
+
+delete from lease where vehicleid = 55;
+
+update vehicles set vstatus = 0 where vehicleid = 11;
+
+select * from lease where endDate > now();
+
+SELECT v.vehicleid
+FROM Payment p
+JOIN Lease l ON p.leaseID = l.leaseID
+JOIN Vehicles v ON l.vehicleid = v.vehicleid
+WHERE l.leaseid = 5;
+
+SELECT v.dailyRate
+FROM lease l
+JOIN Vehicles v ON l.vehicleid = v.vehicleid
+WHERE l.leaseid = 12;
+
+
+delete from vehicles where vehicleid = 13;
+select * from vehicles;
+
+
+
+
+
+create database TechShop;
+use TechShop;
+
+
+create table  Customers(
+	CustomerID int primary key,
+    FirstName text,
+    LastName text,
+	Email text,
+    Phone bigint,
+    Address text
+);
+
+
+create table Products(
+	ProductID int primary key,
+    ProductName text,
+    Description text,
+    price int
+);
+create table Orders(
+	OrderID int,
+    CustomerID int,
+    OrderDate datetime,
+    TotalAmount int,
+    primary key (OrderID),
+    foreign key (CustomerID) references Customers(CustomerID)
+);
+create table OrderDetails(
+	OrderDetailID int,
+	OrderID int,
+    ProductID int,
+    Quantity int,
+    primary key(OrderDetailID),
+    foreign key (OrderID) references Orders(OrderID),
+    foreign key(ProductID) references Products(ProductID) 
+);
+create table Inventory(
+	InventoryID int,
+    ProductID int,
+	QuantityInStock int,
+    LastStockUpdate datetime
+);
+
+INSERT INTO Customers (CustomerID, FirstName, LastName, Email, Phone, Address)
+VALUES
+(1, 'John', 'Doe', 'john.doe@email.com', 1234567890, '123 Main Street'),
+(2, 'Jane', 'Smith', 'jane.smith@email.com', 9876543210, '456 Oak Avenue'),
+(3, 'Robert', 'Johnson', 'robert.j@email.com', 5551112233, '789 Pine Lane'),
+(4, 'Sarah', 'Miller', 'sarah.m@email.com', 4445556666, '101 Maple Drive'),
+(5, 'Michael', 'Davis', 'michael.d@email.com', 7778889999, '202 Elm Street'),
+(6, 'Emily', 'Brown', 'emily.b@email.com', 6667778888, '303 Cedar Road'),
+(7, 'William', 'White', 'william.w@email.com', 3334445555, '404 Birch Lane'),
+(8, 'Olivia', 'Lee', 'olivia.l@email.com', 2223334444, '505 Oak Street'),
+(9, 'James', 'Taylor', 'james.t@email.com', 1112223333, '606 Pine Avenue'),
+(10, 'Emma', 'Wilson', 'emma.w@email.com', 9998887777, '707 Maple Boulevard');
+
+INSERT INTO Products (ProductID, ProductName, Description, Price)
+VALUES
+(1, 'Laptop', 'High-performance laptop', 1000),
+(2, 'Smartphone', 'Latest smartphone model', 500),
+(3, 'Headphones', 'Noise-canceling headphones', 150),
+(4, 'Tablet', 'Android tablet with HD display', 300),
+(5, 'Camera', 'DSLR camera with 24MP resolution', 800),
+(6, 'Smartwatch', 'Fitness tracker and smartwatch', 200),
+(7, 'Printer', 'Wireless color printer', 250),
+(8, 'External Hard Drive', '2TB USB 3.0 external hard drive', 120),
+(9, 'Wireless Mouse', 'Ergonomic wireless mouse', 30),
+(10, 'Gaming Console', 'Latest gaming console model', 400);
+
+INSERT INTO Orders (OrderID, CustomerID, OrderDate, TotalAmount)
+VALUES
+(1, 1, '2023-01-15 10:30:00', 1500),
+(2, 2, '2023-02-20 14:45:00', 800),
+(3, 3, '2023-03-05 09:15:00', 300),
+(4, 4, '2023-04-12 12:00:00', 600),
+(5, 5, '2023-05-18 16:30:00', 400),
+(6, 6, '2023-06-25 11:45:00', 200),
+(7, 7, '2023-07-02 08:00:00', 450),
+(8, 8, '2023-08-19 14:20:00', 750),
+(9, 9, '2023-09-24 09:30:00', 120),
+(10, 10, '2023-10-30 15:00:00', 1000);
+
+INSERT INTO OrderDetails (OrderDetailID, OrderID, ProductID, Quantity)
+VALUES
+(1, 1, 1, 2),
+(2, 1, 3, 1),
+(3, 2, 2, 3),
+(4, 3, 4, 1),
+(5, 3, 5, 1),
+(6, 4, 6, 2),
+(7, 5, 7, 1),
+(8, 6, 8, 1),
+(9, 7, 9, 4),
+(10, 8, 10, 1);
+
+INSERT INTO Inventory (InventoryID, ProductID, QuantityInStock, LastStockUpdate)
+VALUES
+(1, 1, 20, '2023-01-01 09:00:00'),
+(2, 2, 30, '2023-02-01 12:30:00'),
+(3, 3, 50, '2023-03-10 15:45:00'),
+(4, 4, 15, '2023-04-18 08:20:00'),
+(5, 5, 10, '2023-05-25 11:00:00'),
+(6, 6, 25, '2023-06-30 14:10:00'),
+(7, 7, 18, '2023-07-08 10:30:00'),
+(8, 8, 40, '2023-08-21 12:15:00'),
+(9, 9, 12, '2023-09-30 16:00:00'),
+(10, 10, 5, '2023-10-31 09:45:00');
+
+select * from Customers;
+
+delete from Orders where OrderID = 7;
+
+UPDATE Customers
+SET
+    Email = 'jane.s@email.com',
+    Address = '457 Oak Avenue'
+WHERE
+    CustomerID = 2;
+
+select sum(TotalAmount) from Orders;
+
+select avg(TotalAmount) from Orders;
+
+select max(TotalAmount) from Orders group by TotalAmount;
+
+
+select * from inventory;
+
+show tables;
+
+select * from products;
+
+
+
+SELECT COUNT(productid) AS COUNT
+FROM products
+GROUP BY price;
+
+
+update customers set phone = 8888585805 where customerid = 11;
+
+
+
+use joinspract;
+
+create table Products(
+ProductID int,
+ProductName text,
+SuplierID int,
+CategoryID int,
+Unit text,
+Price float
+);
+
+create table Suppliers(
+SupplierID int,
+SupplierName text,
+ContactName text,
+Address text,
+City text,
+PostalCode text,
+Country text
+);
+
+insert into Products values
+(1,'Chais',1,1,'10 boxes x 20 bags',18),
+(2,'Chang',1,1,'10 boxes x 20 bags',19),
+(3,'Aniseed Syrup',1,2,'10 boxes x 20 bags',10),
+(4,'Chef Antons Cajun Seasoning',2,2,'10 boxes x 20 bags',22),
+(5,'Chef Antons Gumbo Mix',2,2,'10 boxes x 20 bags',21.35);
+
+insert into Suppliers values
+(1,'Exotic Liquid',	'Charlotte Cooper',	'49 Gilbert St.','London','EC1 4SD','UK'),
+(2,'New Orleans Cajun Delights','Shelley Burke','P.O. Box 78934','New Orleans','70117','USA'),
+(3,'Grandma Kellys Homestead','Regina Murphy',	'707 Oxford Rd.','Ann Arbor','48104','USA'),
+(4,'Tokyo Traders',	'Yoshi Nagase',	'9-8 Sekimai Musashino-shi','Tokyo','100','Japan');
+
+select * from Suppliers;
+select * from Products;
+
+SELECT SupplierName
+FROM Suppliers
+WHERE EXISTS (SELECT ProductName FROM Products WHERE Products.SuplierID = Suppliers.supplierID AND Price < 20);
+
+SELECT SupplierName,Address,City
+FROM Suppliers
+WHERE EXISTS (SELECT ProductName FROM Products WHERE Products.SuplierID = Suppliers.supplierID AND Price = 22);
+
+SELECT * FROM Products
+ORDER BY Price;
+
+SELECT * FROM Products
+ORDER BY Price DESC;
+
+SELECT * FROM Products
+ORDER BY ProductName;
+
+
+
+SELECT ALL ProductName
+FROM Products
+WHERE TRUE;
+
+
+SELECT length(SupplierName)
+FROM Suppliers
+WHERE EXISTS (SELECT ProductName FROM Products WHERE Products.SuplierID = Suppliers.supplierID AND Price < 20);
+
+select * from Customers;
+
+insert into Customers values
+(1,'Alfreds Futterkiste','Maria Anders','Obere Str. 57','Berlin',12209,'Germany'),
+(2,'Ana Trujillo Emparedados y helados','Ana Trujillo','Avda. de la Constitución 2222','México D.F.',05021,'Mexico'),
+(3,'Antonio Moreno Taquería','Antonio Moreno','Mataderos 2312','México D.F.',05023,'Mexico');
+
+insert into Orders values
+(10308,2,7,'1996-09-18',3),
+(10309,37,3,'1996-09-19',1),
+(10310,77,8,'1996-09-20',2);
+
+
+SELECT Customers.CustomerName, Orders.OrderID
+FROM Customers
+FULL JOIN Orders ON Customers.CustomerID=Orders.CustomerID
+ORDER BY Customers.CustomerName;
+
+
+SELECT *
+FROM Products
+WHERE Price > ANY (
+    SELECT Price
+    FROM Products
+    WHERE SuplierID = 2
+);
+
+SELECT *
+FROM Products
+WHERE Price > ALL (
+    SELECT Price
+    FROM Products
+    WHERE SuplierID = 1
+);
+
+select round(avg(Price),2) from Products;
+
+
+SELECT ProductName
+FROM Products
+INTERSECT ALL
+SELECT SupplierName
+FROM Suppliers;
+
+SELECT ProductName
+FROM Products
+EXCEPT
+SELECT SupplierName
+FROM Suppliers;
+
+SELECT ProductName
+FROM Products
+INTERSECT
+SELECT SupplierName
+FROM Suppliers;
+
+SELECT ProductName
+FROM Products
+EXCEPT ALL
+SELECT SupplierName
+FROM Suppliers;
+
+SELECT ProductName
+FROM Products
+UNION
+SELECT SupplierName
+FROM Suppliers;
+
+
+SELECT *
+FROM Products
+WHERE ProductName LIKE '%Chef%';
+
+SELECT *
+FROM Products
+WHERE Price > 20
+AND SuplierID = 2;
+
+SELECT *
+FROM Products
+WHERE Price < 15
+OR SuplierID = 1;
+
+SELECT *
+FROM Products
+WHERE NOT SuplierID = 4;
+
+
+/*
+Equi join
+*/
+SELECT Products.ProductID, Products.ProductName, Products.Price, Suppliers.SupplierName
+FROM Products
+JOIN Suppliers ON Products.SuplierID = Suppliers.SupplierID;
+/*
+Non Equi join
+*/
+SELECT Products.ProductID, Products.ProductName, Products.Price
+FROM Products
+JOIN (
+    SELECT AVG(Price) AS AvgPrice
+    FROM Products
+) AS AvgPrices ON Products.Price > AvgPrices.AvgPrice;
+
+
+
+
+select ascii('C');
+select char(66);
+select len('Microsift sql');
+select reverse('python');
+select replace('Microsoft sql','sql','server');
+select upper('google');
+
+select abs(-559);
+select sin(1.33);
+select log(8.92);
+select ceiling(14.01);
+select floor(14.75);
+select exp(4.5);
+
+
+select  getdate ();
+select day ( '2023-01-25');
+select dateadd (mm, 2, '2023-12-07');
+select datepart (mm, '2008-5-22');
+select month ('2023-05-31');
+select year ( '2023-05-3');
+
+
+
+create database pet_adoption;
+use pet_adoption;
+
+show tables;
+
+desc animals;
+
+create table animals (id text NOT NULL, name varchar(12), breed varchar(15), color varchar(12), gender varchar(10), status int);
+create table adoptions (animal_id text NOT NULL, name varchar(12), contact varchar(12), date date);
+
+show columns from animals;
+show columns from adoptions;
+
+alter table animals
+modify column color varchar(20);
+
+alter table adoptions
+modify column contact varchar(30);
+
+alter table adoptions
+modify column date datetime;
+
+insert into animals (id, name, breed, color, gender, status) values
+ ('89354034-20d9-4c3d-8195-3294bfd9dbc5', 'Bellyflop', 'Beagle', 'Brown', 'Male', 0),
+ ('ae91cf1c-f972-4 2f3-8160-6c04d 935699c', 'Snowy', 'Husky', 'White', 'Female', 0),
+ ('37df3388-b0f4-4 f0d-b6ef-0d8409 23a4d8', 'Princess', 'Pomeranian', 'Black', 'Female', 0),
+ ('94545432-d27a- 4ac8-ab7c-3827 0d7535f3', 'Cricket', 'Chihuahua', 'Brown', 'Male', 0),
+ ('a1e7a7fc-b429- 41ec-9924-8bb3 9dd397c8', 'Princess', 'Poodle', 'Purple', 'Female', 0),
+ ('5138ed53-2ab2- 400b-973c-9118 6f8c673d', 'Spot', 'Dalmation', 'Black And White', 'Male', 0);
+ 
+select * from Animals;
+select breed from animals;
+select name from Animals where gender = 'Female';
+select id from animals where status = 0;
+
+
+update animals set color = 'Brown'
+where id = 'a1e7a7fc-b429-41ec-9924-8bb39dd397c8';
+
+update animals set status = 0
+where id = '94545432-d27a-4ac8-ab7c-38270d7535f3';
+
+
+update animals set status = 1 where id = 'a1e7a7fc-b429- 41ec-9924-8bb3 9dd397c8';
+insert into adoptions (animal_id, name, contact, date)
+values ('a1e7a7fc-b429-41ec-9924-8bb39dd397c8', 'Patalie', 'poodlequeen@cockroachlabs.com', now());
+
+update animals set status = 1 where id = '5138ed53-2ab2- 400b-973c-9118 6f8c673d';
+insert into adoptions (animal_id, name, contact, date)
+values ('5138ed53-2ab2-400b-973c-91186f8c673d', 'Ella', 'ellacrew@cockroachlabs.com', now());
+
+select * from adoptions;
+select * from animals;
+select * from adoptions order by date desc;
+select * from animals where status = 1;
+
+
+
+
+alter table animals add column species varchar(10);
+update animals set species = 'Dog';
+
+select * from animals;
+
+insert into animals (id, name, species, breed, color, gender, status) values 
+('11d6fa07-449f-4053-a7cb-ae4ec8570f3f', 'Meowmix', 'Cat', 'Munchkin', 'Yellow', 'Female', 0),
+('4e55860a-ec39-494b-845a-2e0a6496bf9b', 'Ash', 'Cat', 'Persian', 'Gray', 'Female', 0),
+('e80b92e5-98ed-458d-885d-b9e05d0d123e', 'Tiger', 'Cat', 'Bengal', 'Brown', 'Male', 0);
+
+create table Shelters (id int, name varchar(15), location varchar(25));
+
+alter table Shelters
+modify column name varchar(30);
+
+insert into shelters (id, name, location)
+values
+(1, 'Animals 4 Homes', 'Red City');
+
+ALTER TABLE animals ADD COLUMN shelter INTEGER;
+UPDATE animals SET shelter = 1;
+
+INSERT INTO shelters (id, name, location) VALUES (2, 'Adopt A Buddy', 'Green Town');
+INSERT INTO shelters (id, name, location) VALUES (3, 'Fluffy Animals', 'Blue Hills');
+
+INSERT INTO animals (id, name, shelter, species, breed, color, gender, status) VALUES 
+('ac1a773d-6912-45cc-b296-1b58d13dbd32', 'Snoops', 2, 'Dog', 'Beagle', 'Brown', 'Male', 0),
+('56e9be70-ed24-4949-bb54-70329c2caf82', 'Salt', 2, 'Cat', 'Turkish Angora', 'White', 'Female', 0),
+('b91df9f1-8e3d-4cce-a4ba-9d1a3ad6a12b', 'Fuzz', 3, 'Dog', 'Papillon', 'Gray', 'Male', 0);
+
+select * from animals;
+select * from adoptions;
+
+create database Animals;
+create database Animals;
+
+
+delete from adoptions where date = '2024-01-20 10:00:00';
+
+
+
+
+SELECT TRIM("#" FROM "  #SQL Hexware!  ") AS TrimmedString;
+
+
+
+
+
+create database joinspract;
+use joinspract;
+
+create table Student(
+rollnum int,
+name varchar(10),
+address varchar(25),
+phone varchar(13),
+age int
+);
+
+create table StudentCourse(
+courseid int,
+rollno int
+);
+
+insert into Student 
+values
+(1,'Harsh','Delhi','XXXXXXXXXX',18),
+(2,'Pratik','Bihar','XXXXXXXXXX',19),
+(3,'Riyanka','Siliguri','XXXXXXXXXX',20),
+(4,'Deep','Ramnagar','XXXXXXXXXX',18),
+(5,'Saptarhi','Kolkata','XXXXXXXXXX',19),
+(6,'Dhanraj','Barabajar','XXXXXXXXXX',20),
+(7,'Rohit','Balurghat','XXXXXXXXXX',18),
+(8,'Niraj','Alipur','XXXXXXXXXX',19);
+
+insert into StudentCourse values
+(1,1),
+(2,2),
+(2,3),
+(3,4),
+(1,5),
+(4,9),
+(5,10),
+(4,11);
+
+select * from Student;
+select * from StudentCourse;
+
+SELECT Student.courseid, Student.NAME, Student.AGE FROM Student
+INNER JOIN StudentCourse
+ON Student.rollnum = StudentCourse.rollno;
+
+SELECT  Student.NAME, StudentCourse.courseid FROM Student
+LEFT JOIN StudentCourse
+ON Student.rollnum = StudentCourse.rollno;
+
+SELECT  Student.NAME, StudentCourse.courseid FROM Student
+RIGHT JOIN StudentCourse
+ON StudentCourse.rollno = Student.rollnum;
+
+SELECT *
+FROM Student
+FULL JOIN StudentCourse 
+ON Student.rollnum = StudentCourse.rollno;
+
+SELECT Student.name, StudentCourse.courseid
+FROM Student,StudentCourse
+WHERE Student.rollnum = StudentCourse.rollno;
+
+
+SELECT rollnum FROM Student
+UNION
+SELECT rollno FROM StudentCourse;
+
+
+show databases;
+use sisdb;
+
+SELECT s.student_id, s.first_name, s.last_name
+FROM Students s
+JOIN Payments p ON s.student_id = p.student_id
+GROUP BY s.student_id, s.first_name, s.last_name 
+HAVING COUNT(p.payment_id) > 0;
+
+show databases;
+use courierms;
+
+SELECT * FROM Courier WHERE Weight > (SELECT AVG(Weight) FROM Courier);
+
+SELECT SUM(Cost) AS TotalCost FROM CourierServices WHERE Cost < (SELECT MAX(Cost) FROM CourierServices);
+
+
+
+create table Products(
+ProductID int,
+ProductName text,
+SuplierID int,
+CategoryID int,
+Unit text,
+Price float
+);
+
+create table Suppliers(
+SupplierID int,
+SupplierName text,
+ContactName text,
+Address text,
+City text,
+PostalCode text,
+Country text
+);
+
+insert into Products values
+(1,'Chais',1,1,'10 boxes x 20 bags',18),
+(2,'Chang',1,1,'10 boxes x 20 bags',19),
+(3,'Aniseed Syrup',1,2,'10 boxes x 20 bags',10),
+(4,'Chef Antons Cajun Seasoning',2,2,'10 boxes x 20 bags',22),
+(5,'Chef Antons Gumbo Mix',2,2,'10 boxes x 20 bags',21.35);
+
+insert into Suppliers values
+(1,'Exotic Liquid',	'Charlotte Cooper',	'49 Gilbert St.','London','EC1 4SD','UK'),
+(2,'New Orleans Cajun Delights','Shelley Burke','P.O. Box 78934','New Orleans','70117','USA'),
+(3,'Grandma Kellys Homestead','Regina Murphy',	'707 Oxford Rd.','Ann Arbor','48104','USA'),
+(4,'Tokyo Traders',	'Yoshi Nagase',	'9-8 Sekimai Musashino-shi','Tokyo','100','Japan');
+
+select * from Suppliers;
+select * from Products;
+
+SELECT SupplierName
+FROM Suppliers
+WHERE EXISTS (SELECT ProductName FROM Products WHERE Products.SuplierID = Suppliers.supplierID AND Price < 20);
+
+SELECT SupplierName,Address,City
+FROM Suppliers
+WHERE EXISTS (SELECT ProductName FROM Products WHERE Products.SuplierID = Suppliers.supplierID AND Price = 22);
+
+SELECT * FROM Products
+ORDER BY Price;
+
+SELECT * FROM Products
+ORDER BY Price DESC;
+
+SELECT * FROM Products
+ORDER BY ProductName;
+
+
+
+SELECT ALL ProductName
+FROM Products
+WHERE TRUE;
+
+
+select * from Customers;
+
+insert into Customers values
+(1,'Alfreds Futterkiste','Maria Anders','Obere Str. 57','Berlin',12209,'Germany'),
+(2,'Ana Trujillo Emparedados y helados','Ana Trujillo','Avda. de la Constitución 2222','México D.F.',05021,'Mexico'),
+(3,'Antonio Moreno Taquería','Antonio Moreno','Mataderos 2312','México D.F.',05023,'Mexico');
+
+insert into Orders values
+(10308,2,7,'1996-09-18',3),
+(10309,37,3,'1996-09-19',1),
+(10310,77,8,'1996-09-20',2);
+
+
+SELECT Customers.CustomerName, Orders.OrderID
+FROM Customers
+FULL JOIN Orders ON Customers.CustomerID=Orders.CustomerID
+ORDER BY Customers.CustomerName;
+
+
+
+SELECT length(SupplierName)
+FROM Suppliers
+WHERE EXISTS (SELECT ProductName FROM Products WHERE Products.SuplierID = Suppliers.supplierID AND Price < 20);
+
+
+SELECT *
+FROM Products
+WHERE Price > ANY (
+    SELECT Price
+    FROM Products
+    WHERE SuplierID = 2
+);
+
+SELECT *
+FROM Products
+WHERE Price > ALL (
+    SELECT Price
+    FROM Products
+    WHERE SuplierID = 1
+);
+
+select round(avg(Price),2) from Products;
+
+
+SELECT ProductName
+FROM Products
+INTERSECT ALL
+SELECT SupplierName
+FROM Suppliers;
+
+SELECT ProductName
+FROM Products
+EXCEPT
+SELECT SupplierName
+FROM Suppliers;
+
+SELECT ProductName
+FROM Products
+INTERSECT
+SELECT SupplierName
+FROM Suppliers;
+
+SELECT ProductName
+FROM Products
+EXCEPT ALL
+SELECT SupplierName
+FROM Suppliers;
+
+SELECT ProductName
+FROM Products
+UNION
+SELECT SupplierName
+FROM Suppliers;
+
+
+SELECT *
+FROM Products
+WHERE ProductName LIKE '%Chef%';
+
+SELECT *
+FROM Products
+WHERE Price > 20
+AND SuplierID = 2;
+
+SELECT *
+FROM Products
+WHERE Price < 15
+OR SuplierID = 1;
+
+SELECT *
+FROM Products
+WHERE NOT SuplierID = 4;
+
+
+/*
+Equi join
+*/
+SELECT Products.ProductID, Products.ProductName, Products.Price, Suppliers.SupplierName
+FROM Products
+JOIN Suppliers ON Products.SuplierID = Suppliers.SupplierID;
+/*
+Non Equi join
+*/
+SELECT Products.ProductID, Products.ProductName, Products.Price
+FROM Products
+JOIN (
+    SELECT AVG(Price) AS AvgPrice
+    FROM Products
+) AS AvgPrices ON Products.Price > AvgPrices.AvgPrice;
+
+
+
+
+select ascii('C');
+select char(66);
+select len('Microsift sql');
+select reverse('python');
+select replace('Microsoft sql','sql','server');
+select upper('google');
+
+select abs(-559);
+select sin(1.33);
+select log(8.92);
+select ceiling(14.01);
+select floor(14.75);
+select exp(4.5);
+
+
+select  getdate ();
+select day ( '2023-01-25');
+select dateadd (mm, 2, '2023-12-07');
+select datepart (mm, '2008-5-22');
+select month ('2023-05-31');
+select year ( '2023-05-3');
+
+
+
+use joinspract;
+show tables;
+select * from products;
+select * from orders;
+
+UPDATE products
+SET ProductName = UPPER(ProductName);
+
+UPDATE products
+SET Unit = UPPER(Unit);
+
+SELECT COALESCE(NULL,NULL,85, 1, 2, 3) AS ANSWER;
+
+SELECT SuplierID, SUM(Price) AS TotalPrice
+FROM Products
+GROUP BY SuplierID;
+
+SELECT SuplierID, SUM(Price) AS TotalPrice
+FROM Products
+GROUP BY SuplierID
+HAVING SUM(Price) > 50;
+
+SELECT DISTINCT SuplierID
+FROM Products;
+
+select avg(price) from Products;
+
+SELECT SuplierID, AVG(Price) AS AvgPrice
+FROM Products
+GROUP BY SuplierID
+HAVING AVG(Price) > 15;
+
+
+
+
+show databases;
+use courierms;
+show tables;
+select * from courier;
+select * from courierservices;
+select * from employee;
+select * from location;
+select * from payment;
+select * from users;
+
+-- Data Cleaning features
+
+SELECT *
+FROM courier
+WHERE Status = 'In Transit';
+
+SELECT
+    employee.EmployeeID,
+    employee.Name,
+    employee.Email,
+    employee.ContactNumber,
+    employee.Role,
+    employee.Salary,
+    location.LocationName,
+    location.Address AS LocationAddress
+FROM employee
+JOIN location ON employee.EmployeeID = location.LocationID;
+
+SELECT
+    CourierID,
+    SUM(Amount) AS total_amount,
+    AVG(Amount) AS average_amount
+FROM payment
+GROUP BY CourierID;
+
+-- Data Formating 
+
+SELECT CourierID, CHAR(DeliveryDate, 'DD-Mon-YYYY') AS formatted_delivery_date
+FROM courier;
+
+
+-- Data Cleaning
+
+SELECT *
+FROM employees
+WHERE salary > 50000;
+
+UPDATE location
+SET Address = COALESCE(Address, 'Unknown')
+WHERE Address IS NULL;
+
+
+
+
+
+-- Procedures 
+
+DELIMITER //
+
+CREATE PROCEDURE GetUserByID(IN p_UserID INT)
+BEGIN
+    SELECT *
+    FROM users
+    WHERE UserID = p_UserID;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE CalculateTotalPayment(IN p_CourierID INT)
+BEGIN
+    DECLARE totalAmount DECIMAL(10, 2);
+
+    SELECT SUM(Amount) INTO totalAmount
+    FROM payment
+    WHERE CourierID = p_CourierID;
+
+    SELECT totalAmount AS TotalPaymentAmount;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE UpdateCourierStatus(IN p_CourierID INT, IN p_NewStatus VARCHAR(50))
+BEGIN
+    UPDATE courier
+    SET Status = p_NewStatus
+    WHERE CourierID = p_CourierID;
+END //
+
+DELIMITER ;
+
+-- Calling Procedures
+
+CALL GetUserByID(2);
+
+CALL CalculateTotalPayment(1);
+
+CALL UpdateCourierStatus(3, 'In Transit');
+
+
+-- Rank Function
+
+SELECT
+    EmployeeID,
+    Name,
+    Salary,
+    RANK() OVER (ORDER BY Salary DESC) AS SalaryRank
+FROM
+    employee;
+
+SELECT
+    EmployeeID,
+    Name,
+    Salary,
+    DENSE_RANK() OVER (ORDER BY Salary DESC) AS DenseSalaryRank
+FROM
+    employee;
+
+SELECT
+    EmployeeID,
+    Name,
+    Salary,
+    NTILE(4) OVER (ORDER BY Salary DESC) AS SalaryQuartile
+FROM
+    employee;
+
+
+SELECT
+    EmployeeID,
+    Name,
+    Salary,
+    ROW_NUMBER() OVER (ORDER BY Salary DESC) AS RowNumber
+FROM
+    employee;
+
+
+SELECT
+    EmployeeID,
+    Name,
+    Salary,
+    PERCENT_RANK() OVER (ORDER BY Salary DESC) AS PercentRank
+FROM
+    employee;
+
+CASE
+    WHEN condition1 THEN result1
+    WHEN condition2 THEN result2
+    WHEN conditionN THEN resultN
+    ELSE result
+END;
+
+
+SELECT
+    PaymentID,
+    CourierID,
+    Amount,
+    PaymentDate,
+    SUM(Amount) OVER (PARTITION BY CourierID) AS TotalPaymentAmount
+FROM
+    payment;
+    
+    
+-- Create a materialized view named mv_total_payment_by_courier
+CREATE  VIEW mv_total_payment_by_courier AS
+SELECT
+    CourierID,
+    SUM(Amount) AS TotalPaymentAmount
+FROM
+    payment
+GROUP BY
+    CourierID;
+
+-- Create an index on the materialized view for better performance
+CREATE INDEX idx_courier_id ON mv_total_payment_by_courier (CourierID);
+
+SELECT * FROM mv_total_payment_by_courier;
+
+
+-- RegEx Functions
+
+SELECT *
+FROM users
+WHERE REGEXP_LIKE(Email, '\.com$');
+    
+
+SELECT *
+FROM courier
+WHERE REGEXP_LIKE(TrackingNumber, '^TN');
+
+SELECT *
+FROM Location
+WHERE REGEXP_LIKE(LocationName, '^Location');
+
+
+SELECT
+    Role,
+    SUM(Salary) AS TotalSalary
+FROM
+    employee e
+JOIN
+    location l ON e.EmployeeID = l.LocationID
+GROUP BY
+    Role WITH ROLLUP;
